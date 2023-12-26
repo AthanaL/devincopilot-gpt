@@ -3,13 +3,19 @@ from flask import Flask, request, Response, jsonify
 import uuid
 import datetime
 import hashlib
+import json
 
 app = Flask(__name__)
 
 machine_id = hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()
 
-def forward_request(GHO_TOKEN: str, stream: bool, json_data):
+# 创建映射字典
+TOKEN_MAP = {
+    "sk-deveiner.link": "ghu_Ce7DSW2M7be537k5iazmQJKC70hMkD4Tcyvk"
+    # 添加其他映射
+}
 
+def forward_request(GHO_TOKEN: str, stream: bool, json_data):
     headers = {
         'Host': 'api.github.com',
         'authorization': f'token {GHO_TOKEN}',
@@ -51,7 +57,6 @@ def forward_request(GHO_TOKEN: str, stream: bool, json_data):
         # print(response.text)
         return response.json()
 
-
 @app.route('/v1/chat/completions', methods=['POST'])
 def proxy():
     # 从请求中获取json数据
@@ -61,6 +66,8 @@ def proxy():
     # 获取Authorization头部信息
     GHO_TOKEN = request.headers.get('Authorization')
     GHO_TOKEN = GHO_TOKEN.split(' ')[1]
+    # 使用映射字典获取真实的GHO_TOKEN
+    GHO_TOKEN = TOKEN_MAP.get(GHO_TOKEN, GHO_TOKEN)
     print("Secret:", GHO_TOKEN)
     print("Message:", json_data)
     if GHO_TOKEN is None:
@@ -74,7 +81,6 @@ def proxy():
     # 处理流式输出
 
     return Response(resp, mimetype='application/json') if stream else resp
-
 
 @app.route('/v1/models', methods=['GET'])
 def models():
@@ -117,10 +123,63 @@ def models():
     }
     return jsonify(data)
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=False)
 
+def get_user_input():
+    # 获取用户输入的 API 密钥
+    api_key = "sk-deveiner.link"
+
+    # 获取用户选择的模型
+    model = "gpt-4"
+
+    return api_key, model
+
+def send_request_to_api(api_key, model, user_question):
+    # API 端点和请求头
+    url = "http://localhost:8080/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    # 准备请求数据
+    data = {
+        "model": model,
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant."
+            },
+            {
+                "role": "user",
+                "content": user_question
+            }
+        ]
+    }
+
+    # 发送请求
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+
+    # 处理响应
+    if response.status_code == 200:
+        print("AI's answer: ")
+        response_data = response.json()
+        for choice in response_data["choices"]:  # Correcting the key
+            print(choice["message"]["content"])  # 这里修改为正确的键
+    else:
+        print(f"Request failed, status code: {response.status_code}")
+
+# 获取用户输入
+api_key, model = get_user_input()
+
+# 循环发送请求并接收回答
+while True:
+    user_question = input("Please enter your question: ")
+    if user_question.lower() == "exit":
+        print("Exiting...")
+        break
+    send_request_to_api(api_key, model, user_question)
 
 # GHO_TOKEN = "gho_xx"
 # set_access_token(get_token(GHO_TOKEN)['token'])
