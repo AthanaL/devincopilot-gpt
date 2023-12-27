@@ -11,7 +11,7 @@ machine_id = hashlib.sha256(str(uuid.uuid4()).encode()).hexdigest()
 
 # 创建映射字典
 TOKEN_MAP = {
-    "sk-deveiner.link": "ghu_buIwimNBHFmgt7mC9DqPZj3qL6v9Gv0SyF7v"
+    "sk-deveiner.link": "ghu_8HpMTEo01dJjNfbtC84rx3BAI0lkBS2m55D3"
     # 添加其他映射
 }
 
