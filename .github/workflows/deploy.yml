@@ -51,5 +51,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4  # 使用JamesIves/github-pages-deploy-action@v4部署到GitHub Pages
         with:
           folder: build  # 部署的目录
-          token: ${{ secrets.DEPLOY_TOKEN }}  # 部署令牌
+          token: ${{ secrets.GITEE_TOKEN }}  # 部署令牌
           branch: main  # 部署分支
