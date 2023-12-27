@@ -1,9 +1,9 @@
 # cocopilot
 
-![GitHub repo size](https://img.shields.io/github/repo-size/caoyunzhou/cocopilot-gpt)
+![GitHub repo size](https://img.shields.io/github/repo-size/leichinkang/devincopilot)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/leichinkang/devincopilot-gpt/latest)
 ![Docker Pulls](https://img.shields.io/docker/pulls/leichinkang/devincopilot-gpt)
-[![GitHub Repo stars](https://img.shields.io/github/stars/caoyunzhou/cocopilot-gpt?style=social)](https://github.com/caoyunzhou/cocopilot-gpt/stargazers)
+[![GitHub Repo stars](https://img.shields.io/github/stars/leichinkang/devincopilot?style=social)](https://github.com/leichinkang/devincopilot/stargazers)
 
 - 这个项目提供了一个快速简便的方式来使用cocopilot to chatgpt4
 - `重点强调自己部署，降低风控`
@@ -101,4 +101,4 @@ curl --location 'https://cocopilot.aivvm.com/v1/chat/completions' \
 
 ### Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=caoyunzhou/cocopilot-gpt&type=Date)](https://star-history.com/#caoyunzhou/cocopilot-gpt&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=leichinkang/devincopilot&type=Date)](https://star-history.com/#leichinkang/devincopilot&Date)
