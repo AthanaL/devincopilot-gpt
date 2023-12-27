@@ -11,7 +11,7 @@ permissions:
 jobs:
   build-and-deploy:  # 定义一个job，名为build-and-deploy
     concurrency: ci-${{ github.ref }}  # 设置并发，防止同一时间运行多个相同的workflow
-    runs_on: ubuntu-latest  # 指定运行环境为最新版的ubuntu
+    runs-on: ubuntu-latest  # 指定运行环境为最新版的ubuntu
 
     steps:  # 下面是这个job的主要步骤
       - name: Checkout 🛎️  # 第一步：获取代码
