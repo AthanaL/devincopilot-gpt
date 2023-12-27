@@ -1,55 +1,46 @@
-name: Build and Deploy  # 工作流的名称
+name: Deploy to GitHub Pages
 
-on: 
+on:
   push:
-    branches:
-      - main  # 当推送到主分支时触发工作流
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: write  # 写入权限
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:  # 任务名称
-    concurrency: ci-${{ github.ref }}  # 设置并发
-    runs-on: ubuntu-latest  # 在最新版本的ubuntu环境下运行
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v3
 
-    steps:  # 任务步骤
-      - name: Checkout  # 检出代码
-        uses: actions/checkout@v3  # 使用actions/checkout@v3
-
-      - name: Check for package-lock.json  # 检查package-lock.json文件是否存在
-        id: check-lock-file  # 操作ID
-        env:
-          LOCK_FILE_EXISTS: 'false'  # 环境变量，初始值为'false'
-        run: |
-          if [ -f package-lock.json ]; then
-            echo "LOCK_FILE_EXISTS=true" >> $GITHUB_ENV  # 如果文件存在，将环境变量LOCK_FILE_EXISTS的值设置为'true'
-          fi
-
-      - name: Login to DockerHub  # 登录DockerHub
-        uses: docker/login-action@v2  # 使用docker/login-action@v2
-        with:  # 输入登录凭据
-          username: ${{ secrets.DOCKER_USERNAME }}  # DockerHub用户名
-          password: ${{ secrets.DOCKER_PASSWORD }}  # DockerHub密码
-
-      - name: Install and Build  # 安装和构建
-        run: |
-          if [ "${{ env.LOCK_FILE_EXISTS }}" == 'true' ]; then  # 如果package-lock.json文件存在，则运行npm ci
-            npm ci
-          else
-            npm install  # 否则运行npm install
-          fi
-          npm run build  # 运行npm run build构建项目
-
-      - name: Build Docker Image  # 构建Docker镜像
-        run: docker build -t devinglaw/demo:latest .  # 使用Dockerfile构建镜像，镜像标签为devinglaw/demo:latest
-
-      - name: Push Docker Image  # 推送Docker镜像
-        run: docker push devinglaw/demo:latest  # 将镜像推送到DockerHub
-
-      - name: Deploy  # 部署
-        uses: JamesIves/github-pages-deploy-action@v4  # 使用JamesIves/github-pages-deploy-action@v4部署到GitHub Pages
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
         with:
-          folder: build  # 部署的目录
-          token: ${{ secrets.GITEE_TOKEN }}  # 部署令牌
-          branch: main  # 部署分支
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build website
+        run: yarn build
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.GCLIENT }}
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
