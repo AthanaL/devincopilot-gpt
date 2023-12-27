@@ -7,24 +7,38 @@ permissions:
 
 jobs:
   build-and-deploy:
-    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    concurrency: ci-${{ github.ref }} # 在快速连续部署时推荐使用
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
+      # 检查 package-lock.json 文件是否存在
+      - name: Check for package-lock.json
+        id: check-lock-file
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "::set-output name=exists::true"
+          else
+            echo "::set-output name=exists::false"
+          fi
+
       # 安装依赖并构建项目
       - name: Install and Build 🔧
         run: |
-          npm ci
+          if [ ${{ steps.check-lock-file.outputs.exists }} == 'true' ]; then
+            npm ci
+          else
+            npm install
+          fi
           npm run build
 
       # 部署到 GitHub Pages
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build # The folder the action should deploy.
+          folder: build # 将此文件夹部署到 GitHub Pages
 
       # 登录 Docker Hub
       - name: Docker Login
