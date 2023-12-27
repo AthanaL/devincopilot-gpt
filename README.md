@@ -1,8 +1,8 @@
 # cocopilot
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/leichinkang/devincopilot-gpt)
-![Docker Image Size (tag)](https://img.shields.io/docker/image-size/caoyunzhou/cocopilot-chatgpt/latest)
-![Docker Pulls](https://img.shields.io/docker/pulls/caoyunzhou/cocopilot-chatgpt)
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/leichinkang/devincopilot-gpt/latest)
+![Docker Pulls](https://img.shields.io/docker/pulls/leichinkang/devincopilot-gpt)
 [![GitHub Repo stars](https://img.shields.io/github/stars/leichinkang/devincopilot-gpt?style=social)](https://github.com/leichinkang/devincopilot-gpt/stargazers)
 
 - 这个项目提供了一个快速简便的方式来使用cocopilot to chatgpt4
@@ -28,7 +28,7 @@
   docker run -d \
   --name cocopilot-chatgpt \
   -p 8080:8080 \
-  caoyunzhou/cocopilot-chatgpt
+  leichinkang/devincopilot-gpt
 ```
 
 ### Railway部署
