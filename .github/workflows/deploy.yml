@@ -25,5 +25,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build
-          token: ${{ secrets.YOUR_SECRET_NAME }}
+          token: ${{ secrets.DEPLOY_TOKEN }}
           branch: your-branch-name
