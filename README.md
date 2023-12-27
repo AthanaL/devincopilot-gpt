@@ -27,14 +27,14 @@
 ```shell
   docker run -d \
   --name cocopilot-chatgpt \
-  -p 8080:8080 \
+  -p 8081:8080 \
   leichinkang/devincopilot-gpt
 ```
 
 ### Railway部署
 
-- [注册Railway](https://railway.app?referralCode=CG56Re)
-- [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/UhhP8o?referralCode=CG56Re)
+- [注册Railway](https://railway.app)
+- [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app)
 
 ### 使用方式
 
