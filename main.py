@@ -15,6 +15,7 @@ TOKEN_MAP = {
     # 添加其他映射
 }
 
+
 def forward_request(GHO_TOKEN: str, stream: bool, json_data):
     headers = {
         'Host': 'api.github.com',
@@ -28,10 +29,10 @@ def forward_request(GHO_TOKEN: str, stream: bool, json_data):
 
     response = requests.get(
         'https://api.github.com/copilot_internal/v2/token', headers=headers)
-    print("Auth:",response.text)
-    if response.status_code == 200 and response.json()['token']:
+    print("Auth:", response.text)
+    if response.status_code == 200 and 'token' in response.json():
         access_token = response.json()['token']
-        print("Requests_Token: %s" %(access_token))
+        print("Requests_Token: %s" % access_token)
 
         acc_headers = {
             'Host': 'api.githubcopilot.com',
@@ -51,36 +52,36 @@ def forward_request(GHO_TOKEN: str, stream: bool, json_data):
             'Accept-Encoding': 'gzip, deflate, br',
         }
 
-        resp = requests.post('https://api.githubcopilot.com/chat/completions', headers=acc_headers, json=json_data, stream=stream)
+        resp = requests.post('https://api.githubcopilot.com/chat/completions', headers=acc_headers, json=json_data,
+                             stream=stream)
         return resp.iter_content(chunk_size=8192) if stream else resp.json()
     else:
-        # print(response.text)
         return response.json()
+
 
 @app.route('/v1/chat/completions', methods=['POST'])
 def proxy():
-    # 从请求中获取json数据
     json_data = request.get_json()
     if json_data is None:
         return "Request body is missing or not in JSON format", 400
-    # 获取Authorization头部信息
-    GHO_TOKEN = request.headers.get('Authorization')
-    GHO_TOKEN = GHO_TOKEN.split(' ')[1]
-    # 使用映射字典获取真实的GHO_TOKEN
-    GHO_TOKEN = TOKEN_MAP.get(GHO_TOKEN, GHO_TOKEN)
-    print("Secret:", GHO_TOKEN)
-    print("Message:", json_data)
-    if GHO_TOKEN is None:
+
+    auth_header = request.headers.get('Authorization')
+    if auth_header is None:
         return "Authorization header is missing", 401
 
-    # Check if stream option is set in the request data
+    GHO_TOKEN = auth_header.split(' ')[1] if len(auth_header.split(' ')) > 1 else None
+    print("Original Token:", GHO_TOKEN)
+
+    GHO_TOKEN = TOKEN_MAP.get(GHO_TOKEN, GHO_TOKEN)
+    print("Mapped Token:", GHO_TOKEN)
+
+    if GHO_TOKEN is None:
+        return "Invalid token format", 401
+
     stream = json_data.get('stream', False)
-
-    # 转发请求并获取响应
     resp = forward_request(GHO_TOKEN, stream, json_data)
-    # 处理流式输出
-
     return Response(resp, mimetype='application/json') if stream else resp
+
 
 @app.route('/v1/models', methods=['GET'])
 def models():
@@ -122,6 +123,7 @@ def models():
         ]
     }
     return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=False)
