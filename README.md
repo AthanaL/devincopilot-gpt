@@ -1,9 +1,16 @@
 # cocopilot
 
+<<<<<<< HEAD
 ![GitHub repo size](https://img.shields.io/github/repo-size/leichinkang/devincopilot-gpt)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/caoyunzhou/cocopilot-chatgpt/latest)
 ![Docker Pulls](https://img.shields.io/docker/pulls/caoyunzhou/cocopilot-chatgpt)
 [![GitHub Repo stars](https://img.shields.io/github/stars/leichinkang/devincopilot-gpt?style=social)](https://github.com/leichinkang/devincopilot-gpt/stargazers)
+=======
+![GitHub repo size](https://img.shields.io/github/repo-size/leichinkang/devincopilot)
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/leichinkang/devincopilot-gpt/latest)
+![Docker Pulls](https://img.shields.io/docker/pulls/leichinkang/devincopilot-gpt)
+[![GitHub Repo stars](https://img.shields.io/github/stars/leichinkang/devincopilot?style=social)](https://github.com/leichinkang/devincopilot/stargazers)
+>>>>>>> a9ebd4c8a3d915622074a68df8c6a65fe5576e12
 
 - 这个项目提供了一个快速简便的方式来使用cocopilot to chatgpt4
 - `重点强调自己部署，降低风控`
@@ -18,7 +25,7 @@
 ## 广告推广
 
 - 使用企业github拼车copilot使用
-- 低于官方**10$/月**: 可以联系QQ号：496618601
+- 低于官方**10$/月**: 可以联系QQ号：1726256417
 
 ### Docker部署
 
@@ -27,8 +34,8 @@
 ```shell
   docker run -d \
   --name cocopilot-chatgpt \
-  -p 8080:8080 \
-  caoyunzhou/cocopilot-chatgpt
+  -p 8081:8080 \
+  leichinkang/devincopilot-gpt
 ```
 
 ### Railway部署
@@ -101,4 +108,8 @@ curl --location 'https://cocopilot.aivvm.com/v1/chat/completions' \
 
 ### Star History
 
+<<<<<<< HEAD
 [![Star History Chart](https://api.star-history.com/svg?repos=leichinkang/devincopilot-gpt&type=Date)](https://star-history.com/#leichinkang/devincopilot-gpt&Date)
+=======
+[![Star History Chart](https://api.star-history.com/svg?repos=leichinkang/devincopilot&type=Date)](https://star-history.com/#leichinkang/devincopilot&Date)
+>>>>>>> a9ebd4c8a3d915622074a68df8c6a65fe5576e12
