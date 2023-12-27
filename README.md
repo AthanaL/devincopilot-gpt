@@ -1,8 +1,8 @@
 # cocopilot
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/caoyunzhou/cocopilot-gpt)
-![Docker Image Size (tag)](https://img.shields.io/docker/image-size/caoyunzhou/cocopilot-chatgpt/latest)
-![Docker Pulls](https://img.shields.io/docker/pulls/caoyunzhou/cocopilot-chatgpt)
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/leichinkang/devincopilot-gpt/latest)
+![Docker Pulls](https://img.shields.io/docker/pulls/leichinkang/devincopilot-gpt)
 [![GitHub Repo stars](https://img.shields.io/github/stars/caoyunzhou/cocopilot-gpt?style=social)](https://github.com/caoyunzhou/cocopilot-gpt/stargazers)
 
 - 这个项目提供了一个快速简便的方式来使用cocopilot to chatgpt4
@@ -18,7 +18,7 @@
 ## 广告推广
 
 - 使用企业github拼车copilot使用
-- 低于官方**10$/月**: 可以联系QQ号：496618601
+- 低于官方**10$/月**: 可以联系QQ号：1726256417
 
 ### Docker部署
 
@@ -27,8 +27,8 @@
 ```shell
   docker run -d \
   --name cocopilot-chatgpt \
-  -p 8080:8080 \
-  caoyunzhou/cocopilot-chatgpt
+  -p 8081:8080 \
+  leichinkang/devincopilot-gpt
 ```
 
 ### Railway部署
