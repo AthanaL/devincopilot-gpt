@@ -26,4 +26,4 @@ jobs:
         with:
           folder: build
           token: ${{ secrets.DEPLOY_TOKEN }}
-          branch: your-branch-name
+          branch: main
