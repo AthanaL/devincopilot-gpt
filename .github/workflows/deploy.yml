@@ -1,22 +1,24 @@
-name: Build and Deploy
+name: Build and Deploy  # 定义这份工作流的名称
 
-on: [push]
+on: 
+  push:
+    branches:
+      - main  # 当向main分支推送更改时，触发此workflow
 
 permissions:
-  contents: write
+  contents: write  # 设置对代码内容的写权限
 
 jobs:
-  build-and-deploy:
-    concurrency: ci-${{ github.ref }} # 在快速连续部署时推荐使用
-    runs-on: ubuntu-latest
+  build-and-deploy:  # 定义一个job，名为build-and-deploy
+    concurrency: ci-${{ github.ref }}  # 设置并发，防止同一时间运行多个相同的workflow
+    runs_on: ubuntu-latest  # 指定运行环境为最新版的ubuntu
 
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v3
+    steps:  # 下面是这个job的主要步骤
+      - name: Checkout 🛎️  # 第一步：获取代码
+        uses: actions/checkout@v3  # 使用action库中的checkout方法
 
-      # 检查 package-lock.json 文件是否存在
-      - name: Check for package-lock.json
-        id: check-lock-file
+      - name: Check for package-lock.json  # 第二步：检查是否存在 package-lock.json 文件
+        id: check-lock-file  # 设置这个步骤的id为check-lock-file
         run: |
           if [ -f package-lock.json ]; then
             echo "::set-output name=exists::true"
@@ -24,33 +26,30 @@ jobs:
             echo "::set-output name=exists::false"
           fi
 
-      # 安装依赖并构建项目
-      - name: Install and Build 🔧
+      - name: Login to DockerHub  # 第三步：登录DockerHub
+        uses: docker/login-action@v1  # 使用action库中的docker/login-action方法
+        with:  # 输入DockerHub的用户名和密码
+          username: ${{ secrets.DOCKER_USERNAME }}  # 使用你在GitHub仓库中设置的secret（DOCKER_USERNAME）
+          password: ${{ secrets.DOCKER_PASSWORD }}  # 使用你在GitHub仓库中设置的secret（DOCKER_PASSWORD）
+
+      - name: Install and Build 🔧  # 第四步：安装依赖并构建项目
         run: |
-          if [ ${{ steps.check-lock-file.outputs.exists }} == 'true' ]; then
+          if [ ${{ steps.check-lock-file.outputs.exists }} == 'true' ]; then  # 如果存在 package-lock.json 文件，则运行 npm ci
             npm ci
           else
             npm install
           fi
           npm run build
 
-      # 部署到 GitHub Pages
-      - name: Deploy to GitHub Pages 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Build Docker Image  # 第五步：构建 Docker 镜像
+        run: docker build -t devinglaw/demo:latest .  # 使用 Dockerfile 构建镜像，并设置镜像标签为 devinglaw/demo:latest
+
+      - name: Push Docker Image  # 第六步：将 Docker 镜像推送到 DockerHub
+        run: docker push devinglaw/demo:latest  # 将构建好的镜像 push 到 DockerHub
+
+      - name: Deploy 🚀  # 第七步：部署
+        uses: JamesIves/github-pages-deploy-action@v4  # 使用action库中的github-pages-deploy-action方法
         with:
-          folder: build # 将此文件夹部署到 GitHub Pages
-
-      # 登录 Docker Hub
-      - name: Docker Login
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # 构建 Docker 镜像
-      - name: Build Docker Image
-        run: docker build -t devinglaw/demo:latest .
-
-      # 推送 Docker 镜像到 Docker Hub
-      - name: Push Docker Image
-        run: docker push devinglaw/demo:latest
+          folder: build  # 部署的文件夹
+          token: ${{ secrets.DEPLOY_TOKEN }}  # 使用你在GitHub仓库中设置的secret（DEPLOY_TOKEN）
+          branch: main  # 部署的分支
